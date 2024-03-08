@@ -205,8 +205,8 @@ input::-webkit-credentials-auto-fill-button{
 
 .div span{
   text-transform:capitalize;
-      color: rgb(73, 81, 81);
-        margin-left:0.25rem;
+  color: rgb(73, 81, 81);
+  margin-left:0.25rem;
 }
 
 

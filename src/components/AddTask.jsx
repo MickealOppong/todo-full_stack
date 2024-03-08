@@ -1,18 +1,51 @@
 
 import { useState } from "react";
+import 'react-calendar/dist/Calendar.css';
+import 'react-date-picker/dist/DatePicker.css';
 import { FaPlus } from "react-icons/fa";
 import styled from 'styled-components';
-
+import { useGlobalContext } from "./AppContextProvider";
 const AddTask = () => {
   const [showInput, setShowInput] = useState(false);
+  const [priority, setPriority] = useState('');
+  const [project, setProject] = useState('');
+  const [description, setDescription] = useState('');
+  const [dueDate, setDueDate] = useState(new Date());
+  const [title, setTitle] = useState('');
+  const { projects } = useGlobalContext();
 
   const handleClick = () => {
 
   }
   const handleSubmit = (e) => {
     e.preventDefault();
+    const formData = new FormData(e.target)
+    const data = Object.fromEntries(formData);
+    console.log(data);
+    setShowInput(false)
+    addTask(data);
+    setTitle('')
+    setDescription('')
+    setDueDate(new Date())
+    setPriority('low')
+    setProject('')
   }
 
+  /*
+  const { mutate: addTask } = useMutation({
+    mutationKey: ['task'],
+    mutationFn: ({ title, description, dueDate, priority, project }) => api.post('/api/user/todo', { title, description, dueDate, priority, project }, {
+      withCredentials: true
+    }),
+    onSuccess: (response) => {
+      console.log(response);
+    },
+    onError: (error) => {
+      console.log(error);
+    }
+  })
+
+*/
   return <section className="task-form">
     <Wrapper>
       <div className="add-task-container">
@@ -24,20 +57,20 @@ const AddTask = () => {
       <article className={showInput ? 'task-input show' : "task-input"} >
         <form onSubmit={handleSubmit}>
           <div className="task-header">
-            <input type="text" name="title" id="title" placeholder="task name" className="title" />
-            <input type="text" name="description" id="description" placeholder="description" className="description" />
+            <input type="text" name="title" id="title" placeholder="task name" className="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <input type="text" name="description" id="description" placeholder="description" className="description" value={description} onChange={(e) => setDescription(e.target.value)} />
           </div>
           <div className="task-mgt">
 
             <div className="date">
               <label htmlFor="date">due date</label>
-              <input type="date" name="dueDate" id="dueDate" />
+              <input type="date" name="dueDate" id="dueDate" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
             </div>
 
             <div className="priority">
 
-              <label htmlFor="cars">priority</label>
-              <select name="cars" id="cars">
+              <label htmlFor="priority">priority</label>
+              <select name="priority" id="priority" value={priority} onChange={(e) => setPriority(e.target.value)}>
                 <option value="high">high</option>
                 <option value="medium">medium</option>
                 <option value="low">low</option>
@@ -45,13 +78,17 @@ const AddTask = () => {
             </div>
             <div className="project">
 
-              <label htmlFor="cars">project</label>
-              <select name="cars" id="cars">
-                <option value="home">home</option>
-                <option value="work">work</option>
-                <option value="club">club</option>
+              <label htmlFor="project">project</label>
+              <select name="project" id="project" value={project} onChange={(e) => setProject(e.target.value)}>
+                {
+                  projects.map((item) => {
+                    const { id, name } = item;
+                    return <option value={name} key={id}>{name}</option>
+                  })
+                }
               </select>
             </div>
+
           </div>
           <div className="btns">
             <button className="addBtn" onClick={handleClick}>add</button>
@@ -72,14 +109,18 @@ const Wrapper = styled.div`
       column-gap:0.25rem;
 
       .add-task-container{
+
+        width: 30rem;
         display: flex;
         align-items: center;
+        border-top:0.5px solid gray;
       }
     .add-btn{
        background-color: transparent;
       border-color:transparent;
       color: #433a87;
       font-size:1rem;
+      margin-top:0.5rem;
       }
       
       .text{
@@ -96,10 +137,11 @@ const Wrapper = styled.div`
   .task-input{
     position: absolute;
     top: 5%;
-    width: 26rem;
+    width: 30rem;
     display: none;
     padding: 1rem;
-    border: 1px solid gray;
+    border: 0.5px solid gray;
+    border-radius:10px;
   }
 
   .show{
@@ -142,8 +184,12 @@ const Wrapper = styled.div`
     text-transform:capitalize;
   }
  input[type="text"]{
-      text-indent:5px;
+      text-indent:1px;
+      font-size:0.9rem;
+       border:none;
+       caret-color:#433a87;
   }
+
 
 
   input[type="text"]::placeholder{
@@ -153,9 +199,20 @@ const Wrapper = styled.div`
    input[type="text"]:focus{
      outline:none;
   }
+
+  input::-webkit-datetime-edit{
+ 
+  }
+
   select{
+    line-height: 1.5rem;
     accent-color:#433a87;
   }
+
+select[option]{
+  position: absolute;
+  top: 10%;
+}
 
   select:focus{
     outline:none;
@@ -172,6 +229,7 @@ const Wrapper = styled.div`
     background-color: #433a87;
     border-color:transparent;
     color: yellow;
+     text-transform:capitalize;
   }
  
  `

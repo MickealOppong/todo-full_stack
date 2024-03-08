@@ -1,14 +1,16 @@
 import axios from 'axios';
-import { useMutation } from 'react-query';
+import { FaPlus } from 'react-icons/fa';
+import { useMutation, useQuery } from 'react-query';
 import styled from "styled-components";
 import defaultImg from '../assets/profile.webp';
 import '../index.css';
 import { useGlobalContext } from "./AppContextProvider";
+import CreateProject from './CreateProject';
 import { todoView } from "./data";
-import { retrieveToken } from './util';
+import { api, retrieveToken } from './util';
 
 const Sidebar = () => {
-  const { showSidebar, username, authority, isLoginSuccess, setIsLoginSuccess } = useGlobalContext();
+  const { showSidebar, username, authority, isLoginSuccess, setIsLoginSuccess, addProject, setAddProject, projects, setProjects } = useGlobalContext();
 
   const handleLogout = () => {
     const token = retrieveToken('rtk')
@@ -25,6 +27,19 @@ const Sidebar = () => {
       setIsLoginSuccess(false);
       localStorage.removeItem('tk')
       localStorage.removeItem('rtk')
+    },
+    onError: (error) => {
+      console.log(error);
+    }
+  })
+
+  const { data } = useQuery({
+    queryKey: ['projects'],
+    queryFn: () => api.get('/api/projects/all', {
+      withCredentials: true
+    }),
+    onSuccess: (response) => {
+      setProjects(response.data)
     },
     onError: (error) => {
       console.log(error);
@@ -54,8 +69,22 @@ const Sidebar = () => {
           }
         </article>
         <article className='projects'>
-          <h4>my projects</h4>
-          <p>#home</p>
+          <div className='project-center'>
+            <h4>my projects</h4>
+            <button className='create-project-btn' onClick={() => setAddProject(true)}><FaPlus /></button>
+            {
+              addProject ? <CreateProject /> : <></>
+            }
+
+          </div>
+          <div className='project-items'>
+            {
+              projects.map((item) => {
+                const { id, name } = item;
+                return <p key={id}>{name}</p>
+              })
+            }
+          </div>
         </article>
       </section>
       <div className="footer">
@@ -105,9 +134,7 @@ align-items: center;
     column-gap:0.5rem;
    
   }
-  button:hover{
-    background-color:#433a87;
-  }
+
 
   .menus span{
      color: rgb(73, 81, 81);
@@ -149,6 +176,20 @@ align-items: center;
     text-transform:capitalize;
     cursor: pointer;
   }
+
+
+.project-center{
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.create-project-btn{
+  background-color: transparent;
+  border-color:transparent;
+  color: #433a87;
+}
 
 `
 export default Sidebar;

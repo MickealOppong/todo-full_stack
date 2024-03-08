@@ -24,7 +24,7 @@ const Wrapper = styled.section`
 width: 30rem;
 display: flex;
 margin-bottom:1rem;
-border:2px solid gray;
+border-top:0.5px solid gray;
 
 .todo-item{
    display: flex;
@@ -57,7 +57,7 @@ border:2px solid gray;
   background-color: transparent;
   border-color:transparent;
   color: #433a87;
-
+ 
 }
 
 .edit-btn{
