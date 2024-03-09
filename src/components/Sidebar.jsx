@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { FaPlus } from 'react-icons/fa';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import styled from "styled-components";
 import defaultImg from '../assets/profile.webp';
 import '../index.css';
@@ -33,13 +33,17 @@ const Sidebar = () => {
     }
   })
 
+  const queryClient = useQueryClient();
+
   const { data } = useQuery({
     queryKey: ['projects'],
     queryFn: () => api.get('/api/projects/all', {
       withCredentials: true
     }),
     onSuccess: (response) => {
-      console.log(response);
+      queryClient.invalidateQueries({
+        queryKey: ['projects']
+      })
       setProjects(response.data)
 
     },

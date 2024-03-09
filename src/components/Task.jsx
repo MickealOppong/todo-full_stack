@@ -1,7 +1,9 @@
 import { CiEdit } from 'react-icons/ci';
 import { FaTrash } from "react-icons/fa";
+import { useMutation } from 'react-query';
 import styled from 'styled-components';
 import { useGlobalContext } from './AppContextProvider';
+import { api } from './util';
 const Task = () => {
   const { id, projects } = useGlobalContext();
 
@@ -11,6 +13,16 @@ const Task = () => {
   })
 
 
+  const { mutate: deleteTask } = useMutation({
+    mutationKey: ['task'],
+    mutationFn: ({ id }) => api.delete('/api/activity/delete', { id }),
+    onSuccess: () => {
+
+    },
+    onError: (error) => {
+      console.log(error);
+    }
+  })
   return <Wrapper>
     <div>
       {
@@ -29,7 +41,7 @@ const Task = () => {
               <button className='edit-btn'>
                 <CiEdit />
               </button>
-              <button className='delete-btn'><FaTrash /></button>
+              <button className='delete-btn' onClick={() => deleteTask(id)}><FaTrash /></button>
             </div>
           </article>
         })
