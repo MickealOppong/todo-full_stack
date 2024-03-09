@@ -1,28 +1,44 @@
 import { CiEdit } from 'react-icons/ci';
-import { FaTrash } from "react-icons/fa";
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import { useGlobalContext } from './AppContextProvider';
 import { api } from './util';
-const Task = () => {
-  const { id, projects } = useGlobalContext();
 
-  console.log(typeof id);
+const Task = () => {
+  const { id, projects, setEditMode, setData } = useGlobalContext();
+  const queryClient = useQueryClient();
+
+
   const item = projects.find((project) => {
     return project.id === id
   })
 
 
   const { mutate: deleteTask } = useMutation({
-    mutationKey: ['task'],
-    mutationFn: ({ id }) => api.delete('/api/activity/delete', { id }),
-    onSuccess: () => {
-
+    mutationFn: (id) => api.delete(`/api/activity/${id}`, { id }),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({
+        queryKey: ['projects']
+      })
+      console.log(res);
     },
     onError: (error) => {
       console.log(error);
     }
   })
+
+
+  const getData = async (id) => {
+    setEditMode(true)
+    try {
+      const response = await api.get(`/api/activity/${id}`)
+      const data = await response.data;
+      setData(data)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return <Wrapper>
     <div>
       {
@@ -30,18 +46,16 @@ const Task = () => {
           const { title, description, dueDate, priority, id } = list;
           return <article key={id} className='todo-item'>
             <div className='todo-center'>
-              <input type="checkbox" name="complete" id="complete" />
+              <input type="checkbox" name="complete" id="complete" onChange={() => deleteTask(id)} />
               <div className='info'>
-
                 <h4>{title}</h4>
                 <span>{description}</span>
               </div>
             </div>
             <div className='todo-edit'>
-              <button className='edit-btn'>
+              <button className='edit-btn' onClick={() => getData(id)}>
                 <CiEdit />
               </button>
-              <button className='delete-btn' onClick={() => deleteTask(id)}><FaTrash /></button>
             </div>
           </article>
         })
@@ -65,6 +79,7 @@ border-top:0.5px solid gray;
   align-items: center;
 }
 .info{
+  width: 25rem;
   display: flex;
   flex-direction: column;
   padding:0 0.5rem 0 0.5rem;

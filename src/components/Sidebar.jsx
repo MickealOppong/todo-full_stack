@@ -41,9 +41,11 @@ const Sidebar = () => {
       withCredentials: true
     }),
     onSuccess: (response) => {
+      /*
       queryClient.invalidateQueries({
         queryKey: ['projects']
       })
+      */
       setProjects(response.data)
 
     },

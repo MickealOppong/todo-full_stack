@@ -43,7 +43,7 @@ const AddTask = () => {
     }),
     onSuccess: (response) => {
       queryClient.invalidateQueries({
-        queryKey: ['task']
+        queryKey: ['projects']
       })
       console.log(response);
     },

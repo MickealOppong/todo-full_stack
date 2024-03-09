@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { useGlobalContext } from "./AppContextProvider";
 import Task from "./Content";
+import Edit from "./Edit";
 import Sidebar from "./Sidebar";
 import { api } from "./util";
 const Profile = () => {
-  const { setUsername, username, token, setIsLoginSuccess, showSidebar, setAuthority } = useGlobalContext();
+  const { setUsername, username, token, setIsLoginSuccess, showSidebar, setAuthority, editMode } = useGlobalContext();
 
 
 
@@ -28,6 +29,12 @@ const Profile = () => {
   return <main >
     <Sidebar />
     <Task />
+    <div className="overlay" style={{ display: editMode ? 'flex' : 'none' }} />
+
+    {
+      editMode && <Edit />
+    }
+
   </main>
 }
 
