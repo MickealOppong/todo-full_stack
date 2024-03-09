@@ -10,8 +10,9 @@ const AppProvider = ({ children }) => {
   const [authority, setAuthority] = useState('');
   const [addProject, setAddProject] = useState(false);
   const [projects, setProjects] = useState([])
+  const [id, setId] = useState(1);
 
-  return <AppContext.Provider value={{ token, setToken, isLoginSuccess, setIsLoginSuccess, showSidebar, setShowSidebar, username, setUsername, showLoginForm, setShowLoginForm, setAuthority, authority, addProject, setAddProject, projects, setProjects }}>
+  return <AppContext.Provider value={{ token, setToken, isLoginSuccess, setIsLoginSuccess, showSidebar, setShowSidebar, username, setUsername, showLoginForm, setShowLoginForm, setAuthority, authority, addProject, setAddProject, projects, setProjects, id, setId }}>
     {
       children
     }

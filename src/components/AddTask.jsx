@@ -3,8 +3,10 @@ import { useState } from "react";
 import 'react-calendar/dist/Calendar.css';
 import 'react-date-picker/dist/DatePicker.css';
 import { FaPlus } from "react-icons/fa";
+import { useMutation, useQueryClient } from "react-query";
 import styled from 'styled-components';
 import { useGlobalContext } from "./AppContextProvider";
+import { api } from "./util";
 const AddTask = () => {
   const [showInput, setShowInput] = useState(false);
   const [priority, setPriority] = useState('');
@@ -13,6 +15,8 @@ const AddTask = () => {
   const [dueDate, setDueDate] = useState(new Date());
   const [title, setTitle] = useState('');
   const { projects } = useGlobalContext();
+
+  const queryClient = useQueryClient();
 
   const handleClick = () => {
 
@@ -31,13 +35,16 @@ const AddTask = () => {
     setProject('')
   }
 
-  /*
+
   const { mutate: addTask } = useMutation({
     mutationKey: ['task'],
-    mutationFn: ({ title, description, dueDate, priority, project }) => api.post('/api/user/todo', { title, description, dueDate, priority, project }, {
+    mutationFn: ({ title, description, dueDate, priority, project }) => api.post('/api/activity/add', { title, description, dueDate, priority, project }, {
       withCredentials: true
     }),
     onSuccess: (response) => {
+      queryClient.invalidateQueries({
+        queryKey: ['task']
+      })
       console.log(response);
     },
     onError: (error) => {
@@ -45,7 +52,7 @@ const AddTask = () => {
     }
   })
 
-*/
+
   return <section className="task-form">
     <Wrapper>
       <div className="add-task-container">

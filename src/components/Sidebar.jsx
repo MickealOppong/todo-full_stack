@@ -10,7 +10,7 @@ import { todoView } from "./data";
 import { api, retrieveToken } from './util';
 
 const Sidebar = () => {
-  const { showSidebar, username, authority, isLoginSuccess, setIsLoginSuccess, addProject, setAddProject, projects, setProjects } = useGlobalContext();
+  const { showSidebar, username, authority, isLoginSuccess, setIsLoginSuccess, addProject, setAddProject, projects, setProjects, setId } = useGlobalContext();
 
   const handleLogout = () => {
     const token = retrieveToken('rtk')
@@ -39,7 +39,9 @@ const Sidebar = () => {
       withCredentials: true
     }),
     onSuccess: (response) => {
+      console.log(response);
       setProjects(response.data)
+
     },
     onError: (error) => {
       console.log(error);
@@ -81,7 +83,10 @@ const Sidebar = () => {
             {
               projects.map((item) => {
                 const { id, name } = item;
-                return <p key={id}>{name}</p>
+                return <div className='side-btns' key={id}>
+                  <button key={id} onClick={() => setId(id)} className='side-btn'>{name}</button>
+                </div>
+
               })
             }
           </div>
@@ -189,6 +194,14 @@ align-items: center;
   background-color: transparent;
   border-color:transparent;
   color: #433a87;
+}
+
+.side-btn{
+  background-color: transparent;
+  border-color:transparent;
+ text-transform:capitalize;
+
+ cursor: pointer;
 }
 
 `
