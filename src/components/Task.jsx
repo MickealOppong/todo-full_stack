@@ -3,9 +3,8 @@ import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import { useGlobalContext } from './AppContextProvider';
 import { api } from './util';
-
 const Task = () => {
-  const { id, projects, setEditMode, setData } = useGlobalContext();
+  const { id, projects, setEditMode, setData, setId } = useGlobalContext();
   const queryClient = useQueryClient();
 
 
@@ -29,18 +28,37 @@ const Task = () => {
 
 
   const getData = async (id) => {
-    setEditMode(true)
     try {
       const response = await api.get(`/api/activity/${id}`)
       const data = await response.data;
       setData(data)
+      console.log(data);
+      setEditMode(true)
     } catch (error) {
       console.log(error);
     }
+
+
   }
 
+  const fetchData = (id) => {
+    return {
+      queryKey: ['projects'],
+      queryFn: () => api.get(`/api/activity/${id}`),
+      onSuccess: (res) => {
+        setData(res.data);
+        setEditMode(false)
+      },
+      onError: (error) => {
+        console.log(error);
+
+      }
+    }
+  }
+
+
   return <Wrapper>
-    <div>
+    <div className='task-div'>
       {
         item?.todoActivityList.map((list) => {
           const { title, description, dueDate, priority, id } = list;
@@ -48,31 +66,43 @@ const Task = () => {
             <div className='todo-center'>
               <input type="checkbox" name="complete" id="complete" onChange={() => deleteTask(id)} />
               <div className='info'>
-                <h4>{title}</h4>
-                <span>{description}</span>
+                <h4 className='title'>{title}</h4>
+                <div className='desc-div'>
+                  <span className='desc'>{description}</span>
+                  <div className='mgt'>
+                    <span className='priority'>priority: {priority}</span>
+                    <span className='due'>due on: {new Date(dueDate).toUTCString()}</span>
+                  </div>
+                </div>
               </div>
+
             </div>
             <div className='todo-edit'>
-              <button className='edit-btn' onClick={() => getData(id)}>
+              <button className='edit-btn' onClick={() => {
+                getData(id)
+                setEditMode(true)
+              }}>
                 <CiEdit />
               </button>
             </div>
           </article>
         })
       }
-
     </div>
   </Wrapper>
 }
+
 const Wrapper = styled.section`
 width: 30rem;
 display: flex;
 margin-bottom:1rem;
-border-top:0.5px solid gray;
+
 
 .todo-item{
+  width: 30rem;
    display: flex;
    align-items: center;
+border-top:0.5px solid gray;
 }
 .todo-center{
   display: flex;
@@ -112,5 +142,31 @@ border-top:0.5px solid gray;
 input[type="checkbox"]{
   accent-color:#433a87;
 }
+
+.desc-div{
+  display: flex;
+  flex-direction: column;
+}
+
+.desc{
+  text-align:left;
+}
+.mgt{
+  display: flex;
+  column-gap:2rem;
+  justify-content: center;
+}
+
+.title{
+  text-transform:capitalize;
+}
+.priority,
+.due{
+   text-transform:capitalize;
+   font-size:0.7rem;
+
+}
+
 `
+
 export default Task;

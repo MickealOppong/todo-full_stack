@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { FaPlus } from 'react-icons/fa';
+import { FaHashtag, FaPlus } from 'react-icons/fa';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import styled from "styled-components";
-import defaultImg from '../assets/profile.webp';
 import '../index.css';
 import { useGlobalContext } from "./AppContextProvider";
 import CreateProject from './CreateProject';
+import Logo from './Logo';
 import { todoView } from "./data";
 import { api, retrieveToken } from './util';
 
@@ -41,13 +41,7 @@ const Sidebar = () => {
       withCredentials: true
     }),
     onSuccess: (response) => {
-      /*
-      queryClient.invalidateQueries({
-        queryKey: ['projects']
-      })
-      */
-      setProjects(response.data)
-
+      setProjects(response.data);
     },
     onError: (error) => {
       console.log(error);
@@ -59,8 +53,8 @@ const Sidebar = () => {
     <Wrapper>
       <section className="list">
         <div className="profile">
-          <img src={defaultImg} alt="profile" />
-          <span>{username}</span>
+          <Logo name={username} />
+          <span className='username'>{username}</span>
         </div>
         <article className="menus">
           {
@@ -90,7 +84,7 @@ const Sidebar = () => {
               projects.map((item) => {
                 const { id, name } = item;
                 return <div className='side-btns' key={id}>
-                  <button key={id} onClick={() => setId(id)} className='side-btn'>{name}</button>
+                  <button key={id} onClick={() => setId(id)} className='side-btn'>{<FaHashtag />}{name}</button>
                 </div>
 
               })
@@ -115,6 +109,9 @@ align-items:start;
 margin-top:4rem;
 margin-left:1rem;
 
+h4{
+  text-transform:capitalize;
+}
 .profile{
   display: flex;
 align-items: center;
@@ -155,6 +152,9 @@ align-items: center;
    color: white;
   }
 
+  .username{
+    text-transform:capitalize;
+  }
 
   img{
     width: 60px;
@@ -203,6 +203,9 @@ align-items: center;
 }
 
 .side-btn{
+  display: flex;
+  align-items: center;
+  column-gap:0.25rem;
   background-color: transparent;
   border-color:transparent;
  text-transform:capitalize;

@@ -17,15 +17,11 @@ const AddTask = () => {
   const { projects } = useGlobalContext();
 
   const queryClient = useQueryClient();
-
-  const handleClick = () => {
-
-  }
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target)
     const data = Object.fromEntries(formData);
-    console.log(data);
+    //console.log(data);
     setShowInput(false)
     addTask(data);
     setTitle('')
@@ -98,7 +94,7 @@ const AddTask = () => {
 
           </div>
           <div className="btns">
-            <button className="addBtn" onClick={handleClick}>add</button>
+            <button className="addBtn" >add</button>
             <button className="
           cancelBtn" onClick={() => setShowInput(false)}>cancel</button>
           </div>
@@ -116,7 +112,6 @@ const Wrapper = styled.div`
       column-gap:0.25rem;
 
       .add-task-container{
-
         width: 30rem;
         display: flex;
         align-items: center;
