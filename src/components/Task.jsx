@@ -1,12 +1,12 @@
 import { CiEdit } from 'react-icons/ci';
 import { useMutation, useQueryClient } from 'react-query';
-import styled from 'styled-components';
+
 import { useGlobalContext } from './AppContextProvider';
 import { api } from './util';
 const Task = () => {
-  const { id, projects, setEditMode, setData, setId } = useGlobalContext();
-  const queryClient = useQueryClient();
+  const { id, projects, setEditMode, editMode, setData, setId } = useGlobalContext();
 
+  const queryClient = useQueryClient();
 
   const item = projects.find((project) => {
     return project.id === id
@@ -57,116 +57,40 @@ const Task = () => {
   }
 
 
-  return <Wrapper>
-    <div className='task-div'>
-      {
-        item?.todoActivityList.map((list) => {
-          const { title, description, dueDate, priority, id } = list;
-          return <article key={id} className='todo-item'>
-            <div className='todo-center'>
-              <input type="checkbox" name="complete" id="complete" onChange={() => deleteTask(id)} />
-              <div className='info'>
-                <h4 className='title'>{title}</h4>
-                <div className='desc-div'>
-                  <span className='desc'>{description}</span>
-                  <div className='mgt'>
-                    <span className='priority'>priority: {priority}</span>
-                    <span className='due'>due on: {new Date(dueDate).toUTCString()}</span>
+  return <div>
+    {
+      <div className='mx-auto max-w-md md:max-w-xl flex flex-col gap-2'>
+        {
+          item?.todoActivityList.map((list) => {
+            const { title, description, dueDate, priority, id } = list;
+            return <article key={id} className='flex items-center border-2 rounded-xl shadow-md px-2 py-2' >
+              <div className='flex items-center w-full '>
+                <input type="checkbox" name="complete" id="complete" onChange={() => deleteTask(id)} className='accent-m-purple' />
+                <div className='flex flex-col mx-2 '>
+                  <h4 className='capitalize text-gray-700 font-semibold'>{title}</h4>
+                  <p className='text-gray-500 text-xs py-1'>{description}</p>
+                  <div className='flex items-center  gap-8 lg:gap-24 '>
+                    <span className='capitalize text-xs'>priority: {priority}</span>
+                    <span className='text-xs capitalize'>due on: {new Date(dueDate).toUTCString()}</span>
                   </div>
                 </div>
+
               </div>
-
-            </div>
-            <div className='todo-edit'>
-              <button className='edit-btn' onClick={() => {
-                getData(id)
-                setEditMode(true)
-              }}>
-                <CiEdit />
-              </button>
-            </div>
-          </article>
-        })
-      }
-    </div>
-  </Wrapper>
+              <div className='w-4'>
+                <button className='edit-btn' onClick={() => {
+                  setEditMode(true)
+                  getData(id)
+                }}>
+                  <CiEdit />
+                </button>
+              </div>
+            </article>
+          })
+        }
+      </div >
+    }
+  </div >
 }
 
-const Wrapper = styled.section`
-width: 30rem;
-display: flex;
-margin-bottom:1rem;
-
-
-.todo-item{
-  width: 30rem;
-   display: flex;
-   align-items: center;
-border-top:0.5px solid gray;
-}
-.todo-center{
-  display: flex;
-  align-items: center;
-}
-.info{
-  width: 25rem;
-  display: flex;
-  flex-direction: column;
-  padding:0 0.5rem 0 0.5rem;
-}
-
-.info span{
-   color: rgb(73, 81, 81);
-}
-.info h4{
-   color: rgb(73, 81, 81);
-}
-
-.todo-edit{
-  display:flex ;
-  flex-direction: column;
-}
-
-.edit-btn,
-.delete-btn{
-  background-color: transparent;
-  border-color:transparent;
-  color: #433a87;
- 
-}
-
-.edit-btn{
-    font-size:0.9rem;
-}
-
-input[type="checkbox"]{
-  accent-color:#433a87;
-}
-
-.desc-div{
-  display: flex;
-  flex-direction: column;
-}
-
-.desc{
-  text-align:left;
-}
-.mgt{
-  display: flex;
-  column-gap:2rem;
-  justify-content: center;
-}
-
-.title{
-  text-transform:capitalize;
-}
-.priority,
-.due{
-   text-transform:capitalize;
-   font-size:0.7rem;
-
-}
-
-`
 
 export default Task;

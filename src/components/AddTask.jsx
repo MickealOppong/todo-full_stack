@@ -4,7 +4,6 @@ import 'react-calendar/dist/Calendar.css';
 import 'react-date-picker/dist/DatePicker.css';
 import { FaPlus } from "react-icons/fa";
 import { useMutation, useQueryClient } from "react-query";
-import styled from 'styled-components';
 import { useGlobalContext } from "./AppContextProvider";
 import { api } from "./util";
 const AddTask = () => {
@@ -49,31 +48,32 @@ const AddTask = () => {
   })
 
 
-  return <section className="task-form">
-    <Wrapper>
-      <div className="add-task-container">
-        <button className="add-btn" onClick={() => setShowInput(!showInput)}>
-          <FaPlus />
-        </button>
-        <span className="text">add task</span>
-      </div>
-      <article className={showInput ? 'task-input show' : "task-input"} >
-        <form onSubmit={handleSubmit}>
-          <div className="task-header">
-            <input type="text" name="title" id="title" placeholder="task name" className="title" value={title} onChange={(e) => setTitle(e.target.value)} />
-            <input type="text" name="description" id="description" placeholder="description" className="description" value={description} onChange={(e) => setDescription(e.target.value)} />
-          </div>
-          <div className="task-mgt">
+  return <section className="max-w-md md:max-w-xl lg:max-w-xl mx-auto">
 
-            <div className="date">
-              <label htmlFor="date">due date</label>
+    <div className="flex items-center mt-4 text-gray-500">
+      <button className="text-m-purple mr-1 text-sm" onClick={() => setShowInput(!showInput)}>
+        <FaPlus />
+      </button>
+      <span className="text">add task</span>
+    </div>
+    {
+      showInput &&
+
+      <article className='max-w-md border-2 px-1 py-1 -mt-8 md:max-w-xl lg:max-w-xl rounded-md shadow-md' >
+        <form onSubmit={handleSubmit}>
+          <div className="flex flex-col">
+            <input type="text" name="title" id="title" placeholder="task name" className="text-gray-500 capitalize text-x focus:outline-none" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <input type="text" name="description" id="description" placeholder="description" className="text-gray-500 capitalize text-x focus:outline-none" value={description} onChange={(e) => setDescription(e.target.value)} />
+          </div>
+          <div className="flex items-center gap-x-4">
+            <div className="capitalize text-xs">
+              <label htmlFor="date">due date:</label>
               <input type="date" name="dueDate" id="dueDate" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
             </div>
 
             <div className="priority">
-
-              <label htmlFor="priority">priority</label>
-              <select name="priority" id="priority" value={priority} onChange={(e) => setPriority(e.target.value)}>
+              <label htmlFor="priority" className="text-gray-500 capitalize text-xs">priority:</label>
+              <select name="priority" id="priority" value={priority} onChange={(e) => setPriority(e.target.value)} className="text-xs">
                 <option value="high">high</option>
                 <option value="medium">medium</option>
                 <option value="low">low</option>
@@ -81,8 +81,8 @@ const AddTask = () => {
             </div>
             <div className="project">
 
-              <label htmlFor="project">project</label>
-              <select name="project" id="project" value={project} onChange={(e) => setProject(e.target.value)}>
+              <label htmlFor="project" className="text-gray-500 capitalize text-xs">project:</label>
+              <select name="project" id="project" value={project} onChange={(e) => setProject(e.target.value)} className="text-xs">
                 {
                   projects.map((item) => {
                     const { id, name } = item;
@@ -93,146 +93,16 @@ const AddTask = () => {
             </div>
 
           </div>
-          <div className="btns">
-            <button className="addBtn" >add</button>
-            <button className="
-          cancelBtn" onClick={() => setShowInput(false)}>cancel</button>
+          <div className="flex justify-start gap-x-2 my-2">
+            <button className="bg-m-purple text-white w-16 capitalize text-xs rounded" >add</button>
+            <button className="bg-m-purple text-white w-16 capitalize text-xs rounded" onClick={() => setShowInput(false)}>cancel</button>
           </div>
         </form>
       </article>
-    </Wrapper>
+    }
   </section>
 }
 
 
-const Wrapper = styled.div`
-    position: relative;
-      display: flex;
-      flex-direction: column;
-      column-gap:0.25rem;
 
-      .add-task-container{
-        width: 30rem;
-        display: flex;
-        align-items: center;
-        border-top:0.5px solid gray;
-      }
-    .add-btn{
-       background-color: transparent;
-      border-color:transparent;
-      color: #433a87;
-      font-size:1rem;
-      margin-top:0.5rem;
-      }
-      
-      .text{
-        text-transform:capitalize;
-      color: rgb(73, 81, 81);
-        }
-
-
-        form{
-          display: flex;
-          flex-direction: column;
-          row-gap:0.5rem;
-        }
-  .task-input{
-    position: absolute;
-    top: 5%;
-    width: 30rem;
-    display: none;
-    padding: 1rem;
-    border: 0.5px solid gray;
-    border-radius:10px;
-  }
-
-  .show{
-    display: flex;
-   background-color: white;
-  }
-
-  .task-header{
-    display: flex;
-    flex-direction: column;
-  }
-
-  .task-mgt{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    align-items: start;
-    column-gap:2rem;
-  }
-
-  .date,
-  .priority,
-  .project{
-    display: flex;
-    flex-direction: column;
-  }
-
-  .title{
-    width: 15rem;
-    height: 2rem;
-  }
-
-
-  .description{
-     width: 25rem;
-    height: 2rem;
-  }
-
-  label{
-    font-size:0.75rem;
-    text-transform:capitalize;
-  }
- input[type="text"]{
-      text-indent:1px;
-      font-size:0.9rem;
-       border:none;
-       caret-color:#433a87;
-  }
-
-
-
-  input[type="text"]::placeholder{
-      text-transform:capitalize;
-  }
-
-   input[type="text"]:focus{
-     outline:none;
-  }
-
-  input::-webkit-datetime-edit{
- 
-  }
-
-  select{
-    line-height: 1.5rem;
-    accent-color:#433a87;
-  }
-
-select[option]{
-  position: absolute;
-  top: 10%;
-}
-
-  select:focus{
-    outline:none;
-  }
-
-  .btns{
-    display: flex;
-    column-gap:1rem;
-  }
-
-  .addBtn,
-  .cancelBtn{
-      width: 4rem;
-    background-color: #433a87;
-    border-color:transparent;
-    color: yellow;
-     text-transform:capitalize;
-  }
- 
- `
 export default AddTask;

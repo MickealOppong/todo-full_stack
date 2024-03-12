@@ -1,23 +1,13 @@
-import styled from "styled-components";
 
 const Logo = ({ name }) => {
 
   function getCharacter(name) {
     return name.charAt(0);
   }
-  return <Wrapper>
-    <h4>{getCharacter(name)}</h4>
-  </Wrapper>
+  return <div className="flex items-center justify-center bg-darkcyan w-12 h-12 rounded-3xl ">
+    <h4 className="text-white capitalize">{getCharacter(name)}</h4>
+  </div>
 }
-const Wrapper = styled.div`
-width: 3rem;
-height: 3rem;
-display: flex;
-justify-content: center;
-align-items: center;
- background-color:darkcyan;
- color: white;
- border-radius:50%;
- margin-right:0.5rem;
-`
+
+
 export default Logo;

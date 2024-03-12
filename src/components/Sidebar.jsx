@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { FaHashtag, FaPlus } from 'react-icons/fa';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import styled from "styled-components";
 import '../index.css';
 import { useGlobalContext } from "./AppContextProvider";
 import CreateProject from './CreateProject';
@@ -49,169 +48,54 @@ const Sidebar = () => {
   })
 
 
-  return <section className={showSidebar ? "sidebar-container show-sidebar" : "sidebar-container"}>
-    <Wrapper>
-      <section className="list">
-        <div className="profile">
-          <Logo name={username} />
-          <span className='username'>{username}</span>
-        </div>
-        <article className="menus">
-          {
-            todoView.map((item) => {
-              const { id, icon, title } = item;
-              return <button className="menu-container" key={id} >
-                <div className="menu-item">
-                  <span>{icon}</span>
-                  <span>{title}  </span>
-                </div>
-                <span className="item">   1      </span>
-              </button>
-            })
-          }
-        </article>
-        <article className='projects'>
-          <div className='project-center'>
-            <h4>my projects</h4>
-            <button className='create-project-btn' onClick={() => setAddProject(true)}><FaPlus /></button>
-            {
-              addProject ? <CreateProject /> : <></>
-            }
+  return <section className='absolute top-0 left-0 w-18 h-full bg-gray-100 flex flex-col gap-y-4 -translate-x-full' style={{ transform: showSidebar ? 'translateX(0)' : 'translateX(-100%) ', transitionBehavior: 'smooth', transformOrigin: "left", transitionDuration: '0.5s' }}>
+    <div className="mt-16 flex items-center ml-4">
+      <Logo name={username} />
+      <span className='capitalize text-gray-500 ml-2'>{username}</span>
+    </div>
+    <article className="flex flex-col gap-2 mt-16 ml-4">
+      {
+        todoView.map((item) => {
+          const { id, icon, title } = item;
+          return <button className="flex justify-between" key={id} >
+            <div className="flex items-center gap-x-2">
+              <span className='text-gray-500'>{icon}</span>
+              <span className='capitalize text-gray-500'>{title}  </span>
+            </div>
+            <span className="mr-10 text-gray-500">   1      </span>
+          </button>
+        })
+      }
+    </article>
+    <article className='ml-4 mt-8'>
+      <div className='flex gap-x-40'>
+        <h4 className='capitalize text-gray-500'>my projects</h4>
+        <button className='text-gray-500 ml-2' onClick={() => setAddProject(true)}><FaPlus /></button>
+        {
+          addProject ? <CreateProject /> : <></>
+        }
 
-          </div>
-          <div className='project-items'>
-            {
-              projects.map((item) => {
-                const { id, name } = item;
-                return <div className='side-btns' key={id}>
-                  <button key={id} onClick={() => setId(id)} className='side-btn'>{<FaHashtag />}{name}</button>
-                </div>
-
-              })
-            }
-          </div>
-        </article>
-      </section>
-      <div className="footer">
-
-        <p>You are logged in as:<span>{authority}</span></p>
-        <button className='logout-btn' style={{ display: isLoginSuccess ? 'inline' : 'none' }} onClick={handleLogout}>logout</button>
       </div>
-    </Wrapper>
+      <div className='mt-4'>
+        {
+          projects.map((item) => {
+            const { id, name } = item;
+            return <div className='flex flex-col' key={id}>
+              <button key={id} onClick={() => setId(id)} className='flex items-center gap-x-1 text-gray-500'>{<FaHashtag />}{name}</button>
+            </div>
 
+          })
+        }
+      </div>
+    </article>
+
+    <div className="flex flex-col mx-16 mt-16">
+
+      <p>You are logged in as:<span>{authority}</span></p>
+      <button className='bg-darkcyan mt-8 text-white tracking-wide capitalize' style={{ display: isLoginSuccess ? 'inline' : 'none' }} onClick={handleLogout}>logout</button>
+    </div>
   </section>
 }
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-align-items:start;
-margin-top:4rem;
-margin-left:1rem;
 
-h4{
-  text-transform:capitalize;
-}
-.profile{
-  display: flex;
-align-items: center;
-}
-.menus{
-  width: 15rem;
-  margin-top:2rem;
-  display: flex;
-  flex-direction: column;
-}
-
-  .menu-container{
-    display: flex;
-     justify-content: space-between;
-    align-items: center;
-    margin-top:0.5rem;
-    background-color: transparent;
-    border-color:transparent;
-    text-transform:capitalize;
-       padding: 0.25rem;
-    cursor: pointer;
-  }
- 
-  .menu-item{
-    width: 100%;
-    display: flex;
-    align-items: center;
-    column-gap:0.5rem;
-   
-  }
-
-
-  .menus span{
-     color: rgb(73, 81, 81);
-  }
-
-  .menu-container:hover{
-   color: white;
-  }
-
-  .username{
-    text-transform:capitalize;
-  }
-
-  img{
-    width: 60px;
-    height: 60px;
-    border-radius:50%;
-  }
-
-  .footer{
-    position: absolute;
-    bottom: 10%;
-  }
-  
-  p{
-     color: rgb(73, 81, 81);
-  }
-
-  p span{
-    text-transform:capitalize;
-    margin-left:0.5rem;
-  }
-
-  .logout-btn{
-    width: 5rem;
-    height: 1.5rem;
-    margin-left:4rem;
-    background-color: #433a87;
-    border-color:transparent;
-    color: yellow;
-    font-size:0.7rem;
-    text-transform:capitalize;
-    cursor: pointer;
-  }
-
-
-.project-center{
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.create-project-btn{
-  background-color: transparent;
-  border-color:transparent;
-  color: #433a87;
-}
-
-.side-btn{
-  display: flex;
-  align-items: center;
-  column-gap:0.25rem;
-  background-color: transparent;
-  border-color:transparent;
- text-transform:capitalize;
-
- cursor: pointer;
-}
-
-`
 export default Sidebar;
